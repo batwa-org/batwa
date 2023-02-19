@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-02-19T09:42:25.313Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36" etag="GK6HXTHoIX8RtV0p-EAO" version="20.8.20" type="github">
+<mxfile host="app.diagrams.net" modified="2023-02-19T10:05:56.793Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36" etag="hMU1aHEnHyPk-v7hd8UL" version="20.8.20" type="github">
   <diagram name="Page-1" id="2YBvvXClWsGukQMizWep">
     <mxGraphModel dx="838" dy="461" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -56,11 +56,8 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="679Vi7i_t_5A1P0IWbp--2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="480" y="40" width="120" height="60" as="geometry" />
-        </mxCell>
         <mxCell id="679Vi7i_t_5A1P0IWbp--3" value="&lt;div&gt;Things that this app does:&lt;/div&gt;&lt;ul&gt;&lt;li&gt;Maintain a user database; log in, log out&lt;/li&gt;&lt;ul&gt;&lt;li&gt;store user transactions (add/subtract) in their account&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Perform analytics with user data, such as&lt;/li&gt;&lt;ul&gt;&lt;li&gt;total, mean spending, forecasted expenditure, forecasted credit&lt;/li&gt;&lt;li&gt;render a graph of your expenses&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Have a form that let&#39;s you input a fair amount of detail, but complex settings are buried away.&lt;/li&gt;&lt;li&gt;enable web alerts and notifications&lt;/li&gt;&lt;/ul&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="480" y="90" width="250" height="130" as="geometry" />
+          <mxGeometry x="410" y="210" width="250" height="130" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
