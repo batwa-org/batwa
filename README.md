@@ -27,4 +27,4 @@ modern web browser so that it’s accessible across all devices.
   <li>Ability to present analytics on user recorded data via infographics.</li>  
 </ul>
 
-(Integrated with Jira)
+(Integrated with Jira - issue link test)
