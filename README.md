@@ -26,3 +26,5 @@ modern web browser so that it’s accessible across all devices.
   <li>Ability to generated statistics on user recorded data.</li>
   <li>Ability to present analytics on user recorded data via infographics.</li>  
 </ul>
+
+(Integrated with Jira)
