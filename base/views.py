@@ -15,7 +15,7 @@ from django.views import View
 from django.shortcuts import redirect
 from django.db import transaction
 
-from .models import Task, Category
+from .models import Task, Category, Transaction
 from .forms import PositionForm, UserCreateForm
 
 
@@ -46,7 +46,7 @@ class RegisterPage(FormView):
         if self.request.user.is_authenticated:
             return redirect('tasks')
         return super(RegisterPage, self).get(*args, **kwargs)
-    
+
 
 # main page with todo list, search and filters
 class TaskList(LoginRequiredMixin, ListView):
@@ -70,35 +70,60 @@ class TaskList(LoginRequiredMixin, ListView):
         context['order_by_deadline'] = self.request.GET.get('deadline')
 
         return context
-    
-    # queries for filters
-    def get_queryset(self):
-        queryset = super().get_queryset()
 
-        # query for category filter
-        selected_category = self.request.GET.get('category')
-        if selected_category:
-            queryset = queryset.filter(category__name=selected_category)
 
-        # query for completeness filter
-        selected_complete = self.request.GET.get('complete')
-        if selected_complete:
-            queryset = queryset.filter(complete=selected_complete)
-        
-        # query for sort by deadline 
-        sort_order = self.request.GET.get('sort_order')
-        if sort_order == 'deadline_asc':
-            queryset = queryset.order_by('deadline')
-        elif sort_order == 'deadline_desc':
-            queryset = queryset.order_by('-deadline')
+class TransactionList(LoginRequiredMixin, ListView):
+    model = Transaction
+    context_object_name = 'transactions'
+    context_object_name2 = 'categories'
 
-        return queryset
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['transactions'] = context['transactions'].filter(
+            user=self.request.user)
+        context['count'] = context['transactions'].filter(
+            complete=False).count()
+        return context
+
+
+# queries for filters
+
+
+def get_queryset(self):
+    queryset = super().get_queryset()
+
+    # query for category filter
+    selected_category = self.request.GET.get('category')
+    if selected_category:
+        queryset = queryset.filter(category__name=selected_category)
+
+    # query for completeness filter
+    selected_complete = self.request.GET.get('complete')
+    if selected_complete:
+        queryset = queryset.filter(complete=selected_complete)
+
+    # query for sort by deadline
+    sort_order = self.request.GET.get('sort_order')
+    if sort_order == 'deadline_asc':
+        queryset = queryset.order_by('deadline')
+    elif sort_order == 'deadline_desc':
+        queryset = queryset.order_by('-deadline')
+
+    return queryset
 
 # one specific task with all details
+
+
 class TaskDetail(LoginRequiredMixin, DetailView):
     model = Task
     context_object_name = 'task'
     template_name = 'base/task.html'
+
+
+class TransactionDetail(LoginRequiredMixin, DetailView):
+    model = Transaction
+    context_object_name = 'transaction'
+    template_name = 'base/transaction.html'
 
 
 # creating new task
@@ -122,6 +147,28 @@ class TaskCreate(LoginRequiredMixin, CreateView):
         else:
             form = TaskCreate(initial={'category': Category()})
         return render(request, 'create_task.html', {'form': form})
+
+
+class TransactionCreate(LoginRequiredMixin, CreateView):
+    model = Task
+    fields = ['amount', 'is_debit', 'category', 'title', 'description']
+    success_url = reverse_lazy('tasks')
+
+    def form_valid(self, form):  # modifying default function
+        form.instance.user = self.request.user
+        return super(TransactionCreate, self).form_valid(form)
+
+    def create_task(request):
+        if request.method == 'POST':
+            form = TransactionCreate(request.POST)
+            if form.is_valid():
+                task = form.save(commit=False)
+                task.user = request.user
+                task.save()
+                return redirect('tasks')
+        else:
+            form = TransactionCreate(initial={'category': Category()})
+        return render(request, 'create_transaction.html', {'form': form})
 
 
 # updating an existing task
