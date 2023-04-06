@@ -25,23 +25,23 @@
           {% endfor %}
         </select>
         <button type="submit" class="button">Filter by Category</button>
-
-        <!-- <label for="complete">Completeness:</label>
-        <select name="complete" id="completed_filter">
+        <a href="{% url 'category-create' %}">Create new categories</a>
+        <label for="is_debit">Debit:</label>
+        <select name="is_debit" id="completed_filter">
             <option value="">All</option>
-            <option value="True" {% if task.complete == 'True' %} selected {% endif %}>Completed tasks</option>
-            <option value="False" {% if task.complete == 'False' %} selected {% endif %}>Incomplete tasks</option>
+            <option value="True" {% if task.is_debit == 'True' %} selected {% endif %}>Crdeit Records</option>
+            <option value="False" {% if task.is_debit == 'False' %} selected {% endif %}>Debit records</option>
           </select>
-        <button type="submit" class="button">Filter by Completeness</button> -->
+        <button type="submit" class="button">Filter by Completeness</button>
       </form>
 
-      <!-- <form method="GET">
-        <label for="sort">Sort by Deadline</label>
+      <form method="GET">
+        <label for="sort">Sort by Amount</label>
         <select name="sort_order" id="sort_deadline" onchange="this.form.submit()">
             <option value="">Sort by</option>
-            <option value="deadline_asc" {% if order_by_deadline == 'deadline_asc' %}selected{% endif %}>Deadline (ascending)</option>
-            <option value="deadline_desc" {% if order_by_deadline == 'deadline_desc' %}selected{% endif %}>Deadline (descending)</option>
-        </select> -->
+            <option value="amount_asc" {% if order_by_amount == 'amount_asc' %}selected{% endif %}>Deadline (ascending)</option>
+            <option value="amount_desc" {% if order_by_amount == 'amount_desc' %}selected{% endif %}>Deadline (descending)</option>
+        </select>
     </form>
     
 </div>

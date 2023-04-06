@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import TaskList, TaskDetail, TaskCreate, TaskUpdate, DeleteView, CustomLoginView, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate
+from .views import TaskList, TaskDetail, TaskCreate, TaskUpdate, DeleteView, CustomLoginView, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -16,11 +16,13 @@ urlpatterns = [
     path('', TransactionList.as_view(), name='transactions'),
     path('', TransactionList.as_view(), name='tasks'),
     path('transaction/<int:pk>/', TransactionDetail.as_view(), name='transaction'),
-    # path('transaction-create/', TransactionCreate.as_view(), name='transaction-create'),
+    path('transaction-create/', TransactionCreate.as_view(),
+         name='transaction-create'),
     path('transaction-update/<int:pk>/',
          TransactionUpdate.as_view(), name='transaction-update'),
     # path('transaction-delete/<int:pk>/',
     #      DeleteView.as_view(), name='transaction-delete'),
-    path('transaction-create/', TransactionCreate.as_view(),
-         name='transaction-create'),
+
+    path('category-create/', CategoryCreate.as_view(),
+         name='category-create'),
 ]

@@ -91,8 +91,6 @@ class TransactionList(LoginRequiredMixin, ListView):
         context['categories'] = Category.objects.all()
         context['selected_category'] = self.request.GET.get('category')
         context['search_input'] = search_input
-        # context['selected_complete'] = self.request.GET.get('complete')
-        # context['order_by_deadline'] = self.request.GET.get('deadline')
 
         return context
 
@@ -106,19 +104,42 @@ class TransactionList(LoginRequiredMixin, ListView):
         if selected_category:
             queryset = queryset.filter(category__name=selected_category)
 
-        # query for completeness filter
-        # selected_complete = self.request.GET.get('complete')
-        # if selected_complete:
-        #     queryset = queryset.filter(complete=selected_complete)
+        # query for is_debit filter
+        selected_is_debit = self.request.GET.get('is_debit')
+        if selected_is_debit:
+            queryset = queryset.filter(is_debit=selected_is_debit)
 
         # query for sort by deadline
-        # sort_order = self.request.GET.get('sort_order')
-        # if sort_order == 'deadline_asc':
-        #     queryset = queryset.order_by('deadline')
-        # elif sort_order == 'deadline_desc':
-        #     queryset = queryset.order_by('-deadline')
+        sort_order = self.request.GET.get('sort_order')
+        if sort_order == 'amount_asc':
+            queryset = queryset.order_by('amount')
+        elif sort_order == 'amount_desc':
+            queryset = queryset.order_by('-amount')
 
         return queryset
+
+
+class CategoryList(LoginRequiredMixin, ListView):
+    model = Category
+    context_object_name = 'transactions'
+    context_object_name2 = 'categories'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['transactions'] = context['transactions'].filter(
+            user=self.request.user)
+        # context['count'] = context['transactions'].filter(
+        #     complete=False).count()
+
+        search_input = self.request.GET.get('search-area') or ''
+        if search_input:
+            context['transactions'] = context['transactions'].filter(
+                title__contains=search_input)
+        context['categories'] = Category.objects.all()
+        context['selected_category'] = self.request.GET.get('category')
+        context['search_input'] = search_input
+
+        return context
 
 # one specific task with all details
 
@@ -156,6 +177,28 @@ class TaskCreate(LoginRequiredMixin, CreateView):
         else:
             form = TaskCreate(initial={'category': Category()})
         return render(request, 'create_task.html', {'form': form})
+
+
+class CategoryCreate(LoginRequiredMixin, CreateView):
+    model = Category
+    fields = ['name']
+    success_url = reverse_lazy('category')
+
+    def form_valid(self, form):  # modifying default function
+        form.instance.user = self.request.user
+        return super(CategoryCreate, self).form_valid(form)
+
+    def create_category(request):
+        if request.method == 'POST':
+            form = CategoryCreate(request.POST)
+            if form.is_valid():
+                category = form.save(commit=False)
+                category.user = request.user
+                category.save()
+                return redirect('categorys')
+        else:
+            form = CategoryCreate(initial={'category': Category()})
+        return render(request, 'create_category.html', {'form': form})
 
 
 class TransactionCreate(LoginRequiredMixin, CreateView):
