@@ -77,39 +77,48 @@ class TransactionList(LoginRequiredMixin, ListView):
     context_object_name = 'transactions'
     context_object_name2 = 'categories'
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['transactions'] = context['transactions'].filter(
             user=self.request.user)
-        context['count'] = context['transactions'].filter(
-            complete=False).count()
+        # context['count'] = context['transactions'].filter(
+        #     complete=False).count()
+
+        search_input = self.request.GET.get('search-area') or ''
+        if search_input:
+            context['transactions'] = context['transactions'].filter(
+                title__contains=search_input)
+        context['categories'] = Category.objects.all()
+        context['selected_category'] = self.request.GET.get('category')
+        context['search_input'] = search_input
+        # context['selected_complete'] = self.request.GET.get('complete')
+        # context['order_by_deadline'] = self.request.GET.get('deadline')
+
         return context
 
+    # queries for filters
 
-# queries for filters
+    def get_queryset(self):
+        queryset = super().get_queryset()
 
+        # query for category filter
+        selected_category = self.request.GET.get('category')
+        if selected_category:
+            queryset = queryset.filter(category__name=selected_category)
 
-def get_queryset(self):
-    queryset = super().get_queryset()
+        # query for completeness filter
+        # selected_complete = self.request.GET.get('complete')
+        # if selected_complete:
+        #     queryset = queryset.filter(complete=selected_complete)
 
-    # query for category filter
-    selected_category = self.request.GET.get('category')
-    if selected_category:
-        queryset = queryset.filter(category__name=selected_category)
+        # query for sort by deadline
+        # sort_order = self.request.GET.get('sort_order')
+        # if sort_order == 'deadline_asc':
+        #     queryset = queryset.order_by('deadline')
+        # elif sort_order == 'deadline_desc':
+        #     queryset = queryset.order_by('-deadline')
 
-    # query for completeness filter
-    selected_complete = self.request.GET.get('complete')
-    if selected_complete:
-        queryset = queryset.filter(complete=selected_complete)
-
-    # query for sort by deadline
-    sort_order = self.request.GET.get('sort_order')
-    if sort_order == 'deadline_asc':
-        queryset = queryset.order_by('deadline')
-    elif sort_order == 'deadline_desc':
-        queryset = queryset.order_by('-deadline')
-
-    return queryset
+        return queryset
 
 # one specific task with all details
 
@@ -150,9 +159,9 @@ class TaskCreate(LoginRequiredMixin, CreateView):
 
 
 class TransactionCreate(LoginRequiredMixin, CreateView):
-    model = Task
+    model = Transaction
     fields = ['amount', 'is_debit', 'category', 'title', 'description']
-    success_url = reverse_lazy('tasks')
+    success_url = reverse_lazy('transactions')
 
     def form_valid(self, form):  # modifying default function
         form.instance.user = self.request.user
@@ -162,10 +171,10 @@ class TransactionCreate(LoginRequiredMixin, CreateView):
         if request.method == 'POST':
             form = TransactionCreate(request.POST)
             if form.is_valid():
-                task = form.save(commit=False)
-                task.user = request.user
-                task.save()
-                return redirect('tasks')
+                transaction = form.save(commit=False)
+                transaction.user = request.user
+                transaction.save()
+                return redirect('transactions')
         else:
             form = TransactionCreate(initial={'category': Category()})
         return render(request, 'create_transaction.html', {'form': form})
@@ -176,6 +185,12 @@ class TaskUpdate(LoginRequiredMixin, UpdateView):
     model = Task
     fields = ['title', 'category', 'description', 'deadline', 'complete']
     success_url = reverse_lazy('tasks')
+
+
+class TransactionUpdate(LoginRequiredMixin, UpdateView):
+    model = Transaction
+    fields = ['amount', 'is_debit', 'category', 'title', 'description']
+    success_url = reverse_lazy('transactions')
 
 
 # deleting a task
