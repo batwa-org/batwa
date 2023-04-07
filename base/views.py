@@ -181,7 +181,7 @@ class TaskCreate(LoginRequiredMixin, CreateView):
 
 class CategoryCreate(LoginRequiredMixin, CreateView):
     model = Category
-    fields = ['name']
+    fields = ['name', 'description']
     success_url = reverse_lazy('category')
 
     def form_valid(self, form):  # modifying default function
