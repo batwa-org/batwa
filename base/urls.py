@@ -23,6 +23,7 @@ urlpatterns = [
     # path('transaction-delete/<int:pk>/',
     #      DeleteView.as_view(), name='transaction-delete'),
 
+    path('c', TransactionList.as_view(), name='category'),
     path('category-create/', CategoryCreate.as_view(),
          name='category-create'),
 ]
