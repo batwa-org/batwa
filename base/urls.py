@@ -26,4 +26,6 @@ urlpatterns = [
     path('', TransactionList.as_view(), name='category'),
     path('category-create/', CategoryCreate.as_view(),
          name='category-create'),
+     #     HERE's some change i made
+#     path('notification/')
 ]
