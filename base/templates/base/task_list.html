@@ -1,0 +1,114 @@
+{% extends 'base/main.html' %} {% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+<!-- Header that displays username and number of incomplete tasks -->
+<div class="header-bar">
+    <div>
+        <h1>Hello {{request.user|title}}</h1>
+        <h3 style="margin:0">You have <i>{{count}}</i> incomplete task{{ count|pluralize:"s" }}</h3>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">Logout</a> {% else %}
+    <a href="{% url 'login' %}">Login</a> {% endif %}
+</div>
+
+<!-- filters by categories and completeness, sort by deadline -->
+<div class="filter-category">
+    <form method="get">
+        <label for="category">Category:</label>
+        <select name="category" id="category">
+          <option value="">All</option>
+          {% for category in categories %}
+            <option value="{{ category.name }}" {% if selected_category == category.name %}selected{% endif %}>{{ category.name }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="button">Filter by Category</button>
+
+        <label for="complete">Completeness:</label>
+        <select name="complete" id="completed_filter">
+            <option value="">All</option>
+            <option value="True" {% if task.complete == 'True' %} selected {% endif %}>Completed tasks</option>
+            <option value="False" {% if task.complete == 'False' %} selected {% endif %}>Incomplete tasks</option>
+          </select>
+        <button type="submit" class="button">Filter by Completeness</button>
+      </form>
+
+      <form method="GET">
+        <label for="sort">Sort by Deadline</label>
+        <select name="sort_order" id="sort_deadline" onchange="this.form.submit()">
+            <option value="">Sort by</option>
+            <option value="deadline_asc" {% if order_by_deadline == 'deadline_asc' %}selected{% endif %}>Deadline (ascending)</option>
+            <option value="deadline_desc" {% if order_by_deadline == 'deadline_desc' %}selected{% endif %}>Deadline (descending)</option>
+        </select>
+    </form>
+    
+</div>
+
+<!-- Search tasks -->
+<div id="search-add-wrapper">
+    <form method="GET" style="display: flex;">
+        <input type='text' name='search-area' placeholder="Search your task" value="{{search_input}}">
+        <input class="button" type="submit" value='Search'>
+    </form>
+    {% if tasks|length > 0 %}
+    <a id="add-link" href="{% url 'task-create' %}">&#x2b;</a>
+    {% endif %}
+</div>
+
+
+<!-- displays tasks on the main page with their title, category and deadline -->
+<!-- <div id="tasklist_old" class="task-items-wrapper">
+    {% for task in tasks %}
+    <div class="task-wrapper" data-position="{{task.pk}}">
+        <div class="task-title">
+            {% if task.complete %}
+            <div class="task-complete-icon"></div>
+            <i><s><a href="{% url 'task-update' task.id %}">{{task}}</a></s></i> {% else %}
+            <div class="task-incomplete-icon"></div>
+            <a href="{% url 'task-update' task.id %}">{{task}}</a><br>
+            Category: {{ task.category }}<br>
+            Deadline: {{ task.deadline }}<br> {% endif %}
+        </div>
+        <div class="task-controls">
+            <a class="delete-link" href="{% url 'task-delete' task.id %}">&#215;</a>
+        </div>
+    </div>
+
+    {% empty %}
+    <div style="text-align: center; padding-bottom: 10px; line-height: 1em;">
+        <h3>No new tasks are created.</h3>
+        <h3>Create a <a style="text-decoration: none; color: #e53935;" href="{% url 'task-create' %}">New task</a> ! </h3>
+    </div>
+    {% endfor %}
+</div> -->
+
+<div id="tasklist" class="task-items-wrapper">
+    {% for transaction in transactions %}
+    <div class="task-wrapper" data-position="{{transaction.pk}}">
+        <div class="task-title">
+            <!-- {% if task.complete %}
+            <div class="task-complete-icon"></div> -->
+            <!-- <i><s><a href="{% url 'task-update' task.id %}">{{transaction}}</a></s></i> {% else %}
+            <div class="task-incomplete-icon"></div> -->
+            <a href="{% url 'task-update' transaction.id %}">{{transaction}}</a><br>
+            Category: {{ transaction.category }}<br>
+            Amount: {{ transaction.amount }}<br> {% endif %}
+        </div>
+        <div class="task-controls">
+            <a class="delete-link" href="{% url 'task-delete' transaction.id %}">&#215;</a>
+        </div>
+    </div>
+
+    {% empty %}
+    <div style="text-align: center; padding-bottom: 10px; line-height: 1em;">
+        <h3>No new records are created.</h3>
+        <h3>Create a <a style="text-decoration: none; color: #e53935;" href="{% url 'transaction-create' %}">New transaction</a> ! </h3>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock content %}
+
