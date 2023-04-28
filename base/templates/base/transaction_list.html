@@ -1,6 +1,16 @@
 {% extends 'base/main.html' %} {% block content %}
 
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script> -->
+
+  <head>
+    <title>Notifications Test</title>
+    {% load static%}
+    
+    <script src="{% static 'notify.js'%}"></script>
+  </head>
+  <body>
+    <button onclick="notify()">Send Notification</button>
+  </body>
 
 <!-- Header that displays username and number of incomplete tasks -->
 <div class="header-bar">
@@ -105,7 +115,7 @@
     {% empty %}
     <div style="text-align: center; padding-bottom: 10px; line-height: 1em;">
         <h3>No new records are created.</h3>
-        <h3>Create a <a style="text-decoration: none; color: #e53935;" href="{% url 'transaction-create' %}">New transaction</a> ! </h3>
+        <h3>Create a <a style="text-decoration: none; color: #f3605e;" href="{% url 'transaction-create' %}">New transaction</a> ! </h3>
     </div>
     {% endfor %}
 </div>

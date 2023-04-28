@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import TaskList, TaskDetail, TaskCreate, TaskUpdate, DeleteView, CustomLoginView, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate
+from .views import TaskList, TaskDetail, TaskCreate, TaskUpdate, DeleteView, CustomLoginView, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate, notify_js
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -26,5 +26,6 @@ urlpatterns = [
     path('', TransactionList.as_view(), name='category'),
     path('category-create/', CategoryCreate.as_view(),
          name='category-create'),
-    
+    path('notify.js', notify_js, name='notify_js'),
+
 ]
