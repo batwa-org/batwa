@@ -26,7 +26,7 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
-        return reverse_lazy('tasks')
+        return reverse_lazy('transactions')
 
 
 # sign up
@@ -34,7 +34,7 @@ class RegisterPage(FormView):
     template_name = 'base/register.html'
     form_class = UserCreateForm
     redirect_authenticated_user = True
-    success_url = reverse_lazy('tasks')
+    success_url = reverse_lazy('transactions')
 
     def form_valid(self, form):
         user = form.save()
@@ -49,27 +49,27 @@ class RegisterPage(FormView):
 
 
 # main page with todo list, search and filters
-class TaskList(LoginRequiredMixin, ListView):
-    model = Task
-    context_object_name = 'tasks'
-    context_object_name2 = 'categories'
+# class TaskList(LoginRequiredMixin, ListView):
+#     model = Task
+#     context_object_name = 'tasks'
+#     context_object_name2 = 'categories'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['tasks'] = context['tasks'].filter(user=self.request.user)
-        context['count'] = context['tasks'].filter(complete=False).count()
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['tasks'] = context['tasks'].filter(user=self.request.user)
+#         context['count'] = context['tasks'].filter(complete=False).count()
 
-        search_input = self.request.GET.get('search-area') or ''
-        if search_input:
-            context['tasks'] = context['tasks'].filter(
-                title__contains=search_input)
-        context['categories'] = Category.objects.all()
-        context['selected_category'] = self.request.GET.get('category')
-        context['search_input'] = search_input
-        context['selected_complete'] = self.request.GET.get('complete')
-        context['order_by_deadline'] = self.request.GET.get('deadline')
+#         search_input = self.request.GET.get('search-area') or ''
+#         if search_input:
+#             context['tasks'] = context['tasks'].filter(
+#                 title__contains=search_input)
+#         context['categories'] = Category.objects.all()
+#         context['selected_category'] = self.request.GET.get('category')
+#         context['search_input'] = search_input
+#         context['selected_complete'] = self.request.GET.get('complete')
+#         context['order_by_deadline'] = self.request.GET.get('deadline')
 
-        return context
+#         return context
 
 
 class TransactionList(LoginRequiredMixin, ListView):
@@ -141,13 +141,7 @@ class CategoryList(LoginRequiredMixin, ListView):
 
         return context
 
-# one specific task with all details
-
-
-class TaskDetail(LoginRequiredMixin, DetailView):
-    model = Task
-    context_object_name = 'task'
-    template_name = 'base/task.html'
+# one specific transaction with all details
 
 
 class TransactionDetail(LoginRequiredMixin, DetailView):
@@ -157,26 +151,26 @@ class TransactionDetail(LoginRequiredMixin, DetailView):
 
 
 # creating new task
-class TaskCreate(LoginRequiredMixin, CreateView):
-    model = Task
-    fields = ['title', 'category', 'description', 'deadline', 'complete']
-    success_url = reverse_lazy('tasks')
+# class TaskCreate(LoginRequiredMixin, CreateView):
+#     model = Task
+#     fields = ['title', 'category', 'description', 'deadline', 'complete']
+#     success_url = reverse_lazy('tasks')
 
-    def form_valid(self, form):  # modifying default function
-        form.instance.user = self.request.user
-        return super(TaskCreate, self).form_valid(form)
+#     def form_valid(self, form):  # modifying default function
+#         form.instance.user = self.request.user
+#         return super(TaskCreate, self).form_valid(form)
 
-    def create_task(request):
-        if request.method == 'POST':
-            form = TaskCreate(request.POST)
-            if form.is_valid():
-                task = form.save(commit=False)
-                task.user = request.user
-                task.save()
-                return redirect('tasks')
-        else:
-            form = TaskCreate(initial={'category': Category()})
-        return render(request, 'create_task.html', {'form': form})
+#     def create_task(request):
+#         if request.method == 'POST':
+#             form = TaskCreate(request.POST)
+#             if form.is_valid():
+#                 task = form.save(commit=False)
+#                 task.user = request.user
+#                 task.save()
+#                 return redirect('tasks')
+#         else:
+#             form = TaskCreate(initial={'category': Category()})
+#         return render(request, 'create_task.html', {'form': form})
 
 
 class CategoryCreate(LoginRequiredMixin, CreateView):
@@ -224,10 +218,10 @@ class TransactionCreate(LoginRequiredMixin, CreateView):
 
 
 # updating an existing task
-class TaskUpdate(LoginRequiredMixin, UpdateView):
-    model = Task
-    fields = ['title', 'category', 'description', 'deadline', 'complete']
-    success_url = reverse_lazy('tasks')
+# class TaskUpdate(LoginRequiredMixin, UpdateView):
+#     model = Task
+#     fields = ['title', 'category', 'description', 'deadline', 'complete']
+#     success_url = reverse_lazy('tasks')
 
 
 class TransactionUpdate(LoginRequiredMixin, UpdateView):
@@ -238,9 +232,9 @@ class TransactionUpdate(LoginRequiredMixin, UpdateView):
 
 # deleting a task
 class DeleteView(LoginRequiredMixin, DeleteView):
-    model = Task
-    context_object_name = 'task'
-    success_url = reverse_lazy('tasks')
+    model = Transaction
+    context_object_name = 'transaction'
+    success_url = reverse_lazy('transactions')
 
     def get_queryset(self):
         owner = self.request.user
