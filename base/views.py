@@ -64,21 +64,6 @@ class TransactionList(LoginRequiredMixin, ListView):
             'amount', output_field=models.FloatField()))['total_credit'] or 0.0
         context['total_amount'] = debit_total - credit_total
 
-        # total_amount = Transaction.objects.filter(user=self.request.user).aggregate(
-        #     total_debits=Sum(
-        #         Case(When(is_debit=True, then='amount'), default=0),  output_field=models.FloatField()
-        #     ),
-        #     total_credits=Sum(
-        #         Case(When(is_debit=False, then='amount'), default=0),  output_field=models.FloatField()
-        #     )
-        # )
-
-        # context['total_amount'] = (
-        #     total_amount['total_debits'] or 0) - (total_amount['total_credits'] or 0)
-
-        # context['total_amount'] = sum(
-        #     t.amount * (-1 if t.is_debit else 1) for t in context['transactions'])
-
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
             context['transactions'] = context['transactions'].filter(
@@ -176,61 +161,23 @@ class TransactionCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super(TransactionCreate, self).form_valid(form)
 
-    # def post(self, request, *args, **kwargs):
-    #     transactions = Transaction.objects.filter(user=request.user)
-    #     total_amount = sum(
-    #         t.amount * (-1 if t.is_debit else 1) for t in transactions)
-    #     print(total_amount)
-    #     # adding new transaction and seeing if total amount exceeded:
-    #     form = self.get_form()
-    #     form.instance.user = self.request.user
+    def post(self, request, *args, **kwargs):
+        transactions = Transaction.objects.filter(user=request.user)
+        total_amount = sum(
+            t.amount * (-1 if t.is_debit else 1) for t in transactions)
+        form = self.get_form()
+        form.instance.user = self.request.user
 
-    #     if form.is_valid():
-    #         new_transaction = form.save(commit=False)
-    #         if new_transaction.is_debit and new_transaction.amount > total_amount:
-    #             # raise ValidationError(
-    #             #     "You do not have enough funds for this transaction")
-    #             messages.error(
-    #                 request, "You do not have enough funds for this transaction")
-    #             print("HERE's AN ERROR")
-    #         # return self.from_valid(form)
-    #     else:
-    #         # return self.form_invalid(form)
-    #         new_transaction.save()
-    #         form = TransactionCreate(initial={'category': Category()})
-    #         return redirect('transactions')
-    #     return render(request, 'create_transaction.html', {'form': form})
-
-    def create_task(request, self):
-        if request.method == 'POST':
-            form = TransactionCreate(request.POST)
-            transactions = Transaction.objects.filter(user=request.user)
-            total_amount = sum(
-                t.amount * (-1 if t.is_debit else 1) for t in transactions)
-            print(total_amount)
-            # adding new transaction and seeing if total amount exceeded:
-            form = self.get_form()
-            form.instance.user = self.request.user
-
-            if form.is_valid():
-                if transaction.is_debit and transaction.amount > total_amount:
-                    # raise ValidationError(
-                    #     "You do not have enough funds for this transaction")
-                    messages.error(
-                        request, "You do not have enough funds for this transaction")
-                    print("HERE's AN ERROR")
-                else:
-                    transaction = form.save(commit=False)
-                    transaction.user = request.user
-                    transaction.save()
-                    return redirect('transactions')
-            else:
+        if form.is_valid():
+            new_transaction = form.save(commit=False)
+            if new_transaction.is_debit and new_transaction.amount > total_amount:
                 messages.error(
                     request, "You do not have enough funds for this transaction")
-                print("HERE's AN ERROR")
+                return self.form_invalid(form)
+            new_transaction.save()
+            return redirect('transactions')
         else:
-            form = TransactionCreate(initial={'category': Category()})
-        return render(request, 'create_transaction.html', {'form': form})
+            return self.form_invalid(form)
 
 
 class TransactionUpdate(LoginRequiredMixin, UpdateView):
