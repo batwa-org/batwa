@@ -9,13 +9,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import login
 from django.contrib import messages
+from django.db.models import Case, Sum, When
+from django.db import models
 
-# Imports for Reordering Feature
-from django.views import View
-from django.shortcuts import redirect
-from django.db import transaction
 
-from .models import Task, Category, Transaction
+from .models import Category, Transaction
 from .forms import PositionForm, UserCreateForm
 
 
@@ -48,30 +46,6 @@ class RegisterPage(FormView):
         return super(RegisterPage, self).get(*args, **kwargs)
 
 
-# main page with todo list, search and filters
-# class TaskList(LoginRequiredMixin, ListView):
-#     model = Task
-#     context_object_name = 'tasks'
-#     context_object_name2 = 'categories'
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['tasks'] = context['tasks'].filter(user=self.request.user)
-#         context['count'] = context['tasks'].filter(complete=False).count()
-
-#         search_input = self.request.GET.get('search-area') or ''
-#         if search_input:
-#             context['tasks'] = context['tasks'].filter(
-#                 title__contains=search_input)
-#         context['categories'] = Category.objects.all()
-#         context['selected_category'] = self.request.GET.get('category')
-#         context['search_input'] = search_input
-#         context['selected_complete'] = self.request.GET.get('complete')
-#         context['order_by_deadline'] = self.request.GET.get('deadline')
-
-#         return context
-
-
 class TransactionList(LoginRequiredMixin, ListView):
     model = Transaction
     context_object_name = 'transactions'
@@ -84,11 +58,32 @@ class TransactionList(LoginRequiredMixin, ListView):
         # context['count'] = context['transactions'].filter(
         #     complete=False).count()
 
+        debit_total = context['transactions'].filter(is_debit=True).aggregate(total_debit=Sum(
+            'amount', output_field=models.FloatField()))['total_debit'] or 0.0
+        credit_total = context['transactions'].filter(is_debit=False).aggregate(total_credit=Sum(
+            'amount', output_field=models.FloatField()))['total_credit'] or 0.0
+        context['total_amount'] = debit_total - credit_total
+
+        # total_amount = Transaction.objects.filter(user=self.request.user).aggregate(
+        #     total_debits=Sum(
+        #         Case(When(is_debit=True, then='amount'), default=0),  output_field=models.FloatField()
+        #     ),
+        #     total_credits=Sum(
+        #         Case(When(is_debit=False, then='amount'), default=0),  output_field=models.FloatField()
+        #     )
+        # )
+
+        # context['total_amount'] = (
+        #     total_amount['total_debits'] or 0) - (total_amount['total_credits'] or 0)
+
+        # context['total_amount'] = sum(
+        #     t.amount * (-1 if t.is_debit else 1) for t in context['transactions'])
+
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
             context['transactions'] = context['transactions'].filter(
                 title__contains=search_input)
-        context['categories'] = Category.objects.all()
+        context['categories'] = Category.objects.filter(user=self.request.user)
         context['selected_category'] = self.request.GET.get('category')
         context['search_input'] = search_input
 
@@ -97,7 +92,7 @@ class TransactionList(LoginRequiredMixin, ListView):
     # queries for filters
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().filter(user=self.request.user)
 
         # query for category filter
         selected_category = self.request.GET.get('category')
@@ -150,29 +145,6 @@ class TransactionDetail(LoginRequiredMixin, DetailView):
     template_name = 'base/transaction.html'
 
 
-# creating new task
-# class TaskCreate(LoginRequiredMixin, CreateView):
-#     model = Task
-#     fields = ['title', 'category', 'description', 'deadline', 'complete']
-#     success_url = reverse_lazy('tasks')
-
-#     def form_valid(self, form):  # modifying default function
-#         form.instance.user = self.request.user
-#         return super(TaskCreate, self).form_valid(form)
-
-#     def create_task(request):
-#         if request.method == 'POST':
-#             form = TaskCreate(request.POST)
-#             if form.is_valid():
-#                 task = form.save(commit=False)
-#                 task.user = request.user
-#                 task.save()
-#                 return redirect('tasks')
-#         else:
-#             form = TaskCreate(initial={'category': Category()})
-#         return render(request, 'create_task.html', {'form': form})
-
-
 class CategoryCreate(LoginRequiredMixin, CreateView):
     model = Category
     fields = ['name', 'description']
@@ -204,24 +176,61 @@ class TransactionCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super(TransactionCreate, self).form_valid(form)
 
-    def create_task(request):
+    # def post(self, request, *args, **kwargs):
+    #     transactions = Transaction.objects.filter(user=request.user)
+    #     total_amount = sum(
+    #         t.amount * (-1 if t.is_debit else 1) for t in transactions)
+    #     print(total_amount)
+    #     # adding new transaction and seeing if total amount exceeded:
+    #     form = self.get_form()
+    #     form.instance.user = self.request.user
+
+    #     if form.is_valid():
+    #         new_transaction = form.save(commit=False)
+    #         if new_transaction.is_debit and new_transaction.amount > total_amount:
+    #             # raise ValidationError(
+    #             #     "You do not have enough funds for this transaction")
+    #             messages.error(
+    #                 request, "You do not have enough funds for this transaction")
+    #             print("HERE's AN ERROR")
+    #         # return self.from_valid(form)
+    #     else:
+    #         # return self.form_invalid(form)
+    #         new_transaction.save()
+    #         form = TransactionCreate(initial={'category': Category()})
+    #         return redirect('transactions')
+    #     return render(request, 'create_transaction.html', {'form': form})
+
+    def create_task(request, self):
         if request.method == 'POST':
             form = TransactionCreate(request.POST)
+            transactions = Transaction.objects.filter(user=request.user)
+            total_amount = sum(
+                t.amount * (-1 if t.is_debit else 1) for t in transactions)
+            print(total_amount)
+            # adding new transaction and seeing if total amount exceeded:
+            form = self.get_form()
+            form.instance.user = self.request.user
+
             if form.is_valid():
-                transaction = form.save(commit=False)
-                transaction.user = request.user
-                transaction.save()
-                return redirect('transactions')
+                if transaction.is_debit and transaction.amount > total_amount:
+                    # raise ValidationError(
+                    #     "You do not have enough funds for this transaction")
+                    messages.error(
+                        request, "You do not have enough funds for this transaction")
+                    print("HERE's AN ERROR")
+                else:
+                    transaction = form.save(commit=False)
+                    transaction.user = request.user
+                    transaction.save()
+                    return redirect('transactions')
+            else:
+                messages.error(
+                    request, "You do not have enough funds for this transaction")
+                print("HERE's AN ERROR")
         else:
             form = TransactionCreate(initial={'category': Category()})
         return render(request, 'create_transaction.html', {'form': form})
-
-
-# updating an existing task
-# class TaskUpdate(LoginRequiredMixin, UpdateView):
-#     model = Task
-#     fields = ['title', 'category', 'description', 'deadline', 'complete']
-#     success_url = reverse_lazy('tasks')
 
 
 class TransactionUpdate(LoginRequiredMixin, UpdateView):

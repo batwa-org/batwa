@@ -1,12 +1,11 @@
 {% extends 'base/main.html' %} {% block content %}
 
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-
 <!-- Header that displays username and number of incomplete tasks -->
 <div class="header-bar">
     <div>
         <h1>Hello {{request.user|title}}</h1>
         <!-- <h3 style="margin:0">You have <i>{{count}}</i> incomplete task{{ count|pluralize:"s" }}</h3> -->
+        <h2> Amount: {{ total_amount }}</h2>
     </div>
 
     {% if request.user.is_authenticated %}
@@ -74,7 +73,7 @@
             Amount: -{{ transaction.amount }}<br> {% endif %}
         </div>
         <div class="task-controls">
-            <a class="delete-link" href="{% url 'task-delete' transaction.id %}">&#215;</a>
+            <a class="delete-link" href="{% url 'transaction-delete' transaction.id %}">&#215;</a>
         </div>
     </div>
 

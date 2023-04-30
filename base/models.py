@@ -10,6 +10,8 @@ def one_week_hence():
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     # replace these with unicode emojis?
@@ -19,23 +21,15 @@ class Category(models.Model):
         return self.name
 
 
-class Task(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=True, blank=True)
-    title = models.CharField(max_length=200)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    description = models.TextField(null=True, blank=True)
-    complete = models.BooleanField(default=False)
-    created = models.DateTimeField(auto_now_add=True)
-    deadline = models.DateTimeField(default=one_week_hence)
-    status = models.BooleanField(default=False)
+# class User(User):
+#     id = User.natural_key
+#     total_amount = models.FloatField(default=0, null=True)
 
-    def __str__(self):
-        return self.title
+#     class Meta:
+#         proxy = True
 
-    class Meta:
-        order_with_respect_to = 'deadline'
+#     def __str__(self):
+#         return self.username
 
 
 class Transaction(models.Model):

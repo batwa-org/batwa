@@ -1,5 +1,4 @@
 from django import forms
-from .models import Task, Category
 from django.contrib.auth.forms import UserCreationForm
 
 # Reordering Form and View
