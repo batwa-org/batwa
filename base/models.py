@@ -42,7 +42,8 @@ class Transaction(models.Model):
     is_credit = models.BooleanField(default=not (is_debit), null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     is_debt = models.BooleanField(default=False, null=True)
-    title = models.CharField(max_length=200, blank=True, null=True)
+    title = models.CharField(
+        max_length=200, default="blank note", blank=False, null=True)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
