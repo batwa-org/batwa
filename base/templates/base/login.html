@@ -1,8 +1,115 @@
 {% extends 'base/main.html' %}
 {% block content %}
 
+<style>
+/* Header bar */
+
+body {
+    background-color: #525252;
+}
+
+.container{
+    background-color: #7a7a7a;
+    max-height: 0;
+   
+}
+
+.header-bar {
+    background:  linear-gradient(90deg, #0062FF 0%, #5294ff 43%, #8fb6f5 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    border-radius: 50px 50px 0px 0px;
+
+    
+  }
+  
+  .header-bar h1 {
+    margin: 0;
+    font-size: 32px;
+    letter-spacing: 2rem;
+    padding-left: 2em;
+    font-weight: lighter;
+    
+  }
+  
+  /* Card body */
+  .card-body {
+    background-color: #fff;
+    margin: 50px auto;
+    margin-top: 0px;
+    max-width: 550px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 0px 0px 50px 50px;
+   
+    
+  }
+  
+  .card-body form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card-body label {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .card-body input[type="text"], .card-body input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 50px;
+    font-size: 16px;
+    margin-bottom: 20px;
+
+  }
+  
+  .card-body input[type="submit"] {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    justify-content: center;
+    align-items: center;
+    background: #0062FF;
+    border-radius: 50px;
+    margin-bottom: 10%;
+    margin-left: 2%;
+    margin-right: 2%;
+    max-width: 480px;
+    width: 480px;
+  }
+  
+  .card-body input[type="submit"]:hover {
+    background-color: #555;
+  }
+  
+  .card-body p {
+    margin: 0px;
+    font-size: 16px;
+    text-align: center;
+  }
+  
+  .card-body a {
+    color: #333;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .card-body a:hover {
+    text-decoration: underline;
+  }
+
+
+</style>
+
 <div class="header-bar">
-    <h1>Login</h1>
+    <h1>BATWA</h1>
 </div>
 
 <div class="card-body">
