@@ -13,7 +13,7 @@
 
     <style>
         body {
-            background-color: #FAFAFA;
+            background-color: #525252;
             font-family: 'Nunito', sans-serif;
             padding-top: 50px;
             padding-bottom: 50px;
@@ -44,6 +44,7 @@
             background-color: #fff;
             -webkit-box-shadow: 2px 2px 13px -4px rgba(0, 0, 0, 0.21);
             box-shadow: 2px 2px 13px -4px rgba(0, 0, 0, 0.21);
+            border-radius: 25px 25px 5px 5px;
         }
 
         input {
@@ -56,33 +57,49 @@
             justify-content: space-between;
             color: #fff;
             padding: 10px;
-            border-radius: 5px 5px 5px 5px;
-            background: linear-gradient(90deg, #EEA390 0%, #EB796F 43%, #EB796F 100%);
+            border-radius: 25px 25px 0px 0px;
+            background:  linear-gradient(90deg, #0062FF 0%, #5294ff 43%, #8fb6f5 100%);
+            
+            
         }
+
 
         .header-bar a {
             color: rgb(247, 247, 247);
             text-decoration: none;
+            margin-right: 5%;
+            margin-left: 5%;
+        }
+
+        .user-header-bar{
+            margin-left: 5%;
+            margin-right: 5%;
         }
 
         .task-wrapper {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: #fff;
-            border-top: 1px solid #dfe4ea;
+            background-color: #0565ffad;
+            border-top: 5px solid #4b5156;
             overflow: hidden;
+            font-weight: bold;
+            
         }
 
         .task-title {
             display: flex;
             padding: 20px;
+            font-weight: bold;
+            
         }
 
         .task-title a {
             text-decoration: none;
-            color: #4b5156;
             margin-left: 10px;
+            font-weight: bold;
+            color: black;
+            
         }
 
         .task-complete-icon {
@@ -102,14 +119,14 @@
         .delete-link {
             text-decoration: none;
             font-weight: 900;
-            color: #cf4949;
+            color: #ff0000;
             font-size: 22px;
             line-height: 0;
             padding: 20px;
         }
 
         #add-link {
-            color: #EB796F;
+            color: #0062FF;
             text-decoration: none;
             font-size: 42px;
             text-shadow: 1px 1px #81413b;
@@ -135,6 +152,7 @@
             border-radius: 5px;
             padding: 10px;
             width: 90%;
+            margin-right: 5px;
         }
 
         label {
@@ -150,34 +168,45 @@
         .button {
             border: 1px solid #757575;
             background-color: #FFF;
-            color: #EB796F;
+            color: #0062FF;
             padding: 10px;
             font-size: 14px;
             border-radius: 5px;
             cursor: pointer;
             text-decoration: none;
+            width: 200px;
         }
 
         .card-body {
             padding: 20px;
-        }
+        } 
+
+       
 
         .filter-category{
             padding: 20px;
+            width: 500px;
+          
         }
 
         #category{
             padding: 10px;
+            width: 200px;
         }
 
         #completed_filter{
             padding: 10px;
+            width: 200px;
         }
 
         #sort_deadline{
             padding: 10px;
+            width: 200px;
+
         }
-    </style>
+
+       
+    </style> 
 </head>
 
 <body>
