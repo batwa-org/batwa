@@ -1,11 +1,35 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-# Create your models here.
+from django.contrib.auth.models import AbstractUser
 
 
 def one_week_hence():
     return timezone.now() + timezone.timedelta(days=7)
+
+
+def one_week_hence():
+    return timezone.now() + timezone.timedelta(days=7)
+
+
+class CustomUser(AbstractUser):
+    total_amount = models.FloatField(default=0)
+    weekly_limit = models.FloatField(default=0)
+    daily_limit = models.FloatField(default=0)
+    weekly_limit_reset_date = models.DateTimeField(default=one_week_hence())
+    daily_limit_reset_date = models.DateTimeField(default=timezone.now())
+
+    def reset_weekly_limit(self):
+        if self.weekly_limit_reset_date < timezone.now():
+            self.weekly_limit = 0
+            self.weekly_limit_reset_date = one_week_hence()
+            self.save()
+
+    def __str__(self):
+        return self.username
+
+    class Meta:
+        proxy = True
 
 
 class Category(models.Model):
@@ -21,6 +45,7 @@ class Category(models.Model):
         return self.name
 
 
+<< << << < Updated upstream
 # class User(User):
 #     id = User.natural_key
 #     total_amount = models.FloatField(default=0, null=True)
@@ -30,6 +55,10 @@ class Category(models.Model):
 
 #     def __str__(self):
 #         return self.username
+
+
+== == == =
+>>>>>> > Stashed changes
 
 
 class Transaction(models.Model):
