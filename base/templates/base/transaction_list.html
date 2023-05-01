@@ -28,18 +28,18 @@
         <label for="is_debit">Debit:</label>
         <select name="is_debit" id="completed_filter">
             <option value="">All</option>
-            <option value="True" {% if task.is_debit == 'True' %} selected {% endif %}>Crdeit Records</option>
+            <option value="True" {% if task.is_debit == 'True' %} selected {% endif %}>Credit Records</option>
             <option value="False" {% if task.is_debit == 'False' %} selected {% endif %}>Debit records</option>
           </select>
-        <button type="submit" class="button">Filter by Completeness</button>
+        <button type="submit" class="button">Filter by Type</button>
       </form>
 
       <form method="GET">
         <label for="sort">Sort by Amount</label>
         <select name="sort_order" id="sort_deadline" onchange="this.form.submit()">
             <option value="">Sort by</option>
-            <option value="amount_asc" {% if order_by_amount == 'amount_asc' %}selected{% endif %}>Deadline (ascending)</option>
-            <option value="amount_desc" {% if order_by_amount == 'amount_desc' %}selected{% endif %}>Deadline (descending)</option>
+            <option value="amount_asc" {% if order_by_amount == 'amount_asc' %}selected{% endif %}>Amount (ascending)</option>
+            <option value="amount_desc" {% if order_by_amount == 'amount_desc' %}selected{% endif %}>Amount (descending)</option>
         </select>
     </form>
     
