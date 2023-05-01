@@ -8,6 +8,7 @@
 <!-- filters by categories and completeness, sort by deadline -->
 <div class="filter-category">
     <h1>Summary: </h1> 
+    <h2 style="color: grey;"> Total Amount: {{total_amount}} </h2>
     <a href="{% url 'pie_chart' %}"> Graph by Category</a>
     <h1> Transaction History: </h1>
     <form method="get">
@@ -47,7 +48,7 @@
         <input class="button" type="submit" value='Search'>
     </form>
     {% if transactions|length > 0 %}
-    <a id="add-link" href="{% url 'transaction-create' %}">&#x2b;</a>
+    <a id="add-link" href="{% url 'transaction-create' %}"> &#x2b;</a>
     {% endif %}
 </div>
 
@@ -59,6 +60,7 @@
     <div class="task-wrapper" data-position="{{transaction.pk}}">
         <div class="task-title">
             <a href="{% url 'transaction-update' transaction.id %}">{{transaction}}</a><br>
+            Date: {{ transaction.date }}<br>
         </div>
         <div class="task-title">
             Category: {{ transaction.category }}<br>
