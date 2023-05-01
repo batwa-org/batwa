@@ -7,6 +7,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormVi
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from django.http import JsonResponse
+from django.http import HttpResponse
+from django.shortcuts import render
 
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -50,6 +52,12 @@ class RegisterPage(FormView):
         return super(RegisterPage, self).get(*args, **kwargs)
 
 
+# def notify_js(request):
+#     with open('./static/base/notify.js', 'r') as f:
+#         js = f.read()
+#     response = HttpResponse(js, content_type='application/javascript')
+#     return response
+
 def transactions_data(request):
     transactions = Transaction.objects.filter(user=request.user).values(
         'category__name').annotate(total=Sum('amount'))
@@ -81,6 +89,10 @@ class PieChartView(LoginRequiredMixin, TemplateView):
         return context
 
 
+def notify_js(request):
+    return render(request, './static/base/notify.js')
+
+
 class TransactionList(LoginRequiredMixin, ListView):
     model = Transaction
     context_object_name = 'transactions'
@@ -90,6 +102,12 @@ class TransactionList(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['transactions'] = context['transactions'].filter(
             user=self.request.user)
+
+        debit_total = context['transactions'].filter(is_debit=True).aggregate(total_debit=Sum(
+            'amount', output_field=models.FloatField()))['total_debit'] or 0.0
+        credit_total = context['transactions'].filter(is_debit=False).aggregate(total_credit=Sum(
+            'amount', output_field=models.FloatField()))['total_credit'] or 0.0
+        context['total_amount'] = debit_total - credit_total
 
         debit_total = context['transactions'].filter(is_debit=True).aggregate(total_debit=Sum(
             'amount', output_field=models.FloatField()))['total_debit'] or 0.0
@@ -112,6 +130,8 @@ class TransactionList(LoginRequiredMixin, ListView):
     #         return JsonResponse(transactions_data(self.request.user), safe=False)
     #     else:
     #         return super().render_to_response(context, **response_kwargs)
+
+    # queries for filters
 
     # queries for filters
     def get_queryset(self):

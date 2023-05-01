@@ -1,3 +1,37 @@
 .filter-category{
     padding: 20%;
 }
+
+/* Rounded slider */
+.slider {
+    -webkit-appearance: none;
+    width: 50px;
+    height: 26px;
+    background: #ccc;
+    border-radius: 26px;
+    outline: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  
+  .slider:hover {
+    opacity: 1;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: #4CAF50;
+    border-radius: 50%;
+    cursor: pointer;
+  }

@@ -2,8 +2,56 @@
 
 <!-- Header that displays username and number of incomplete tasks -->
 <div class="header-bar">
+    <div>
+        <h1>Hello {{request.user|title}}</h1>
+        <!-- <h3 style="margin:0">You have <i>{{count}}</i> incomplete task{{ count|pluralize:"s" }}</h3> -->
+    </div>
     <a href="{% url 'transactions' %}">&#8592; Back</a>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">Logout</a> {% else %}
+    <a href="{% url 'login' %}">Login</a> {% endif %}
 </div>
+
+
+<head>
+    <title>Notifications Test</title>
+    {% load static%}
+    
+    <script src="{% static 'notify.js'%}"></script>
+  </head>
+  <body>
+      <label class="switch">
+        <label for="notificationToggle">Get Notified when balance is too low?</label>
+        <input type="range" min="0" max="1" step="1"  value="{{ slider_value }}" class="slider" id="notificationSlider" oninput="toggleNotifications(this.value)">
+        <span class="slider round"></span>
+
+        <script>
+            
+      
+            window.addEventListener("load", function() {
+              const notificationToggle = document.getElementById("notificationSlider");
+              toggleNotifications(notificationToggle.value);
+            });
+
+            // Get the slider element and set its value to the one stored in local storage
+            const slider = document.getElementById("notificationSlider");
+            const storedValue = localStorage.getItem("sliderValue");
+            if (storedValue) {
+              slider.value = storedValue;
+            }
+          
+            // Add event listener to update local storage when slider is changed
+            slider.addEventListener("input", function() {
+              localStorage.setItem("sliderValue", slider.value);
+            });
+          </script>
+      </label> 
+      <label for="amountInput">after how many seconds do you want to get notified?</label>
+      <input type="number" id="amountInput" min="0" max="10000" placeholder="Enter amount">
+    <button onclick="toggleNotifications(document.getElementById('notificationSlider').value,document.getElementById('amountInput').value)">Notify</button> 
+      
+  </body>
 
 <!-- filters by categories and completeness, sort by deadline -->
 <div class="filter-category">

@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import Home, PieChartView, DeleteView, CustomLoginView, CategoryList, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate
+# from .views import Home, PieChartView, DeleteView, CustomLoginView, CategoryList, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate
+from .views import DeleteView, PieChartView, CustomLoginView, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate, notify_js
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -17,9 +18,13 @@ urlpatterns = [
          TransactionUpdate.as_view(), name='transaction-update'),
     path('transaction-delete/<int:pk>/',
          DeleteView.as_view(), name='transaction-delete'),
+    path('transaction-delete/<int:pk>/',
+         DeleteView.as_view(), name='transaction-delete'),
 
+    path('', TransactionList.as_view(), name='category'),  # why does this exist?
     path('', TransactionList.as_view(), name='category'),  # why does this exist?
     path('category-create/', CategoryCreate.as_view(),
          name='category-create'),
     path('pie_chart/', PieChartView.as_view(), name='pie_chart'),
+    path('notify.js', notify_js, name='notify_js'),
 ]
