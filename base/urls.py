@@ -1,6 +1,6 @@
 from django.urls import path
 # from .views import Home, PieChartView, DeleteView, CustomLoginView, CategoryList, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate
-from .views import DeleteView, PieChartView, CustomLoginView, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate, notify_js
+from .views import DeleteView, Home, PieChartView, CustomLoginView, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate, notify_js
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [

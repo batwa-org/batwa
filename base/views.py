@@ -68,6 +68,8 @@ def transactions_data(request):
 
     return JsonResponse(data, safe=False)
 
+def notify_js(request):
+    return render(request, './static/base/notify.js')
 
 class PieChartView(LoginRequiredMixin, TemplateView):
     template_name = 'base/pie_chart.html'
@@ -89,8 +91,6 @@ class PieChartView(LoginRequiredMixin, TemplateView):
         return context
 
 
-def notify_js(request):
-    return render(request, './static/base/notify.js')
 
 
 class TransactionList(LoginRequiredMixin, ListView):

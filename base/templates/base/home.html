@@ -11,7 +11,7 @@
     <a href="{% url 'logout' %}"><u>Logout</u></a> {% else %}
     <a href="{% url 'login' %}">Login</a> {% endif %}
 </div>
-<div>
+<div style="padding-bottom: 5%;">
     <h2 style="text-align:center;"> Amount: {{ total_amount }}</h2>
     <a id="add-link" href="{% url 'transaction-list' %}">View History/Summary</a>
     <br/>
