@@ -157,6 +157,12 @@ class TransactionCreate(LoginRequiredMixin, CreateView):
     fields = ['amount', 'is_debit', 'category', 'title', 'description']
     success_url = reverse_lazy('transactions')
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['category'].queryset = Category.objects.filter(
+            user=self.request.user)
+        return form
+
     def form_valid(self, form):  # modifying default function
         form.instance.user = self.request.user
         return super(TransactionCreate, self).form_valid(form)
@@ -184,6 +190,12 @@ class TransactionUpdate(LoginRequiredMixin, UpdateView):
     model = Transaction
     fields = ['amount', 'is_debit', 'category', 'title', 'description']
     success_url = reverse_lazy('transactions')
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['category'].queryset = Category.objects.filter(
+            user=self.request.user)
+        return form
 
 
 # deleting a task
