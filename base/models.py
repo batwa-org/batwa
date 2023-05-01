@@ -45,7 +45,6 @@ class Category(models.Model):
         return self.name
 
 
-<< << << < Updated upstream
 # class User(User):
 #     id = User.natural_key
 #     total_amount = models.FloatField(default=0, null=True)
@@ -55,10 +54,6 @@ class Category(models.Model):
 
 #     def __str__(self):
 #         return self.username
-
-
-== == == =
->>>>>> > Stashed changes
 
 
 class Transaction(models.Model):
