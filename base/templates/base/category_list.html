@@ -1,0 +1,16 @@
+{% extends 'base/main.html' %} {% block content %}
+
+<!-- Header that displays username and number of incomplete tasks -->
+<div class="header-bar">
+    <div class="user-header-bar">
+        <h1>Hello {{request.user|title}}</h1>
+        <!-- <h3 style="margin:0">You have <i>{{count}}</i> incomplete task{{ count|pluralize:"s" }}</h3> -->
+        <h2> Amount: {{ total_amount }}</h2>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}"><u>Logout</u></a> {% else %}
+    <a href="{% url 'login' %}">Login</a> {% endif %}
+</div>
+<a href="{% url 'transaction-list' %}">View History/Summary</a>
+{% endblock content %}

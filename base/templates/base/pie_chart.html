@@ -1,0 +1,50 @@
+{% extends 'base/main.html' %}
+
+{% block content %}
+    <div class="header-bar">
+    <a href="{% url 'transaction-list' %}">&#8592; Back</a>
+    </div>
+    <h1> Expenses by Category</h1>
+    <div id="container" style="width: 100%; padding-top: 5%; padding-bottom: 10%;">
+    <canvas id="pie-chart"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script>
+    
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+        }
+
+    var backgroundColors = [];
+        for (var i = 0; i < {{ data|length }}; i++) {
+        backgroundColors.push(getRandomColor());
+        }
+
+    var config = {
+        type: 'pie',
+        data: {
+        datasets: [{
+            data: {{ data|safe }},
+            backgroundColor: backgroundColors,
+            label: 'Expense by Category'
+        }],
+        labels: {{ labels|safe }}
+        },
+        options: {
+        responsive: true
+        }
+    };
+
+    window.onload = function() {
+        var ctx = document.getElementById('pie-chart').getContext('2d');
+        window.myPie = new Chart(ctx, config);
+    };
+
+    </script>
+
+{% endblock %}

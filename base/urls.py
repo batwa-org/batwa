@@ -1,6 +1,5 @@
 from django.urls import path
-# from .views import TaskList, TaskDetail, TaskCreate, TaskUpdate, DeleteView, CustomLoginView, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate
-from .views import DeleteView, CustomLoginView, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate
+from .views import Home, PieChartView, DeleteView, CustomLoginView, CategoryList, RegisterPage, TransactionCreate, TransactionDetail, TransactionList, TransactionUpdate, CategoryCreate
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -9,7 +8,8 @@ urlpatterns = [
     path('register/', RegisterPage.as_view(), name='register'),
 
 
-    path('', TransactionList.as_view(), name='transactions'),
+    path('', Home.as_view(), name='transactions'),
+    path('transaction-list', TransactionList.as_view(), name='transaction-list'),
     path('transaction/<int:pk>/', TransactionDetail.as_view(), name='transaction'),
     path('transaction-create/', TransactionCreate.as_view(),
          name='transaction-create'),
@@ -21,4 +21,5 @@ urlpatterns = [
     path('', TransactionList.as_view(), name='category'),  # why does this exist?
     path('category-create/', CategoryCreate.as_view(),
          name='category-create'),
+    path('pie_chart/', PieChartView.as_view(), name='pie_chart'),
 ]

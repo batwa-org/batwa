@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+  // Fetch data from Django view using AJAX request
+  $.ajax({
+    url: '/transactions-data/',
+    dataType: 'json',
+    success: function (jsonData) {
+      var data = new google.visualization.DataTable(jsonData);
+
+      var options = {
+        'title': 'My expenditure',
+        'width': 550,
+        'height': 400
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+      chart.draw(data, options);
+    }
+  });
+}
+  </script>
+  <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</head>
+<body>
+  <div id="chartContainer" style="height: 300px; width: 500px; border: 2px solid rgb(2, 2, 25);">
+  </div>
+  <div id="piechart"></div>
+</body>
+</html>
