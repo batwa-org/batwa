@@ -4,6 +4,8 @@
 *.pot
 *.pyc
 __pycache__/
+*.swp
+*.sqlite3
 base/__pycache__/
 local_settings.py
 
